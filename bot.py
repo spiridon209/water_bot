@@ -1,12 +1,11 @@
 from collections import defaultdict
-#from datetime import time
 import time
 
 import config
 from calculations import get_female_amount, get_male_amount, get_water_volume_per_hour
-from user import User, check_user
+from model import check_user, create_data, bot_on, bot_off, check_bot_status, remove
 import my_parser
-from messages import send_message
+from view import send_message
 from timezones import get_user_current_time_utc
 
 import telebot
@@ -136,10 +135,10 @@ def get_user_sleep_time(message):
                                                                              info_about_user['sleep'],
                                                                              info_about_user['daily_value_of_water'])
 
-        info_about_user['bot_status'] = 'on'
+        #info_about_user['bot_status'] = 'on'
         info_about_user['reminder_time'] += 1
         print(info_about_user)
-        user = User(info_about_user)
+        create_data(info_about_user)
         control_the_bot(message)
 
 
@@ -162,7 +161,7 @@ def callback_gender_handler(callback_query):
 
     if status == DONE:
         if text == '1) Запустить бота':
-            User.on_bot(message)
+            bot_on(message)
             bot.send_message(chat_id=message.chat.id,
                              text=f"Бот запущен, теперь он будет напоминать пить воду каждый час!/n"
                              f"Самое время выпить {info_about_user['water_value_per_hour']}мл воды")
@@ -170,17 +169,17 @@ def callback_gender_handler(callback_query):
             print('sending')
 
         if text == '2) Изменить данные о себе':
-            status = User.check_bot_status(message)
+            status = check_bot_status(message)
             if status == 'on':
                 bot.send_message(chat_id=message.chat.id, text='Сначала необходимо остановить бота!')
                 control_the_bot(message)
             else:
-                User.remove(message)
+                remove(message)
                 update_state(message, START)
                 bot.send_message(chat_id=message.chat.id, text='Кликнете на ---> /start в данном сообщении.')
 
         if text == '3) Остановить бота':
-            User.off_bot(message)
+            bot_off(message)
             bot.send_message(chat_id=message.chat.id, text='Бот остановлен!')
             control_the_bot(message)
 
