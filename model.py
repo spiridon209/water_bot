@@ -40,7 +40,7 @@ def create_data(data):
     time_zone = data['time_zone']
     water_value_per_hour = data['water_value_per_hour']
     bot_status = 'off'
-    reminder_time = data['reminder_time']
+    reminder_time = 0
 
     con = sqlite3.connect("bot.db")
     cur = con.cursor()
@@ -188,4 +188,32 @@ def get_reminder_time():
         print(f"Can't get chat_id and reminder_time from db ---> {ex}")
 
 
+def add_reminder_time(message, reminder_time):
+    con = sqlite3.connect("bot.db")
+    cur = con.cursor()
+
+    try:
+        cur.execute(f'UPDATE user SET reminder_time={reminder_time} WHERE chat_id={message.chat.id}')
+        cur.close()
+        con.close()
+
+    except Exception as ex:
+        cur.close()
+        con.close()
+        print(f"Can't update reminder_time db ---> {ex}")
+
+
+def update_reminder_time(new_time, chat_id):
+    con = sqlite3.connect("bot.db")
+    cur = con.cursor()
+
+    try:
+        cur.execute(f'UPDATE user SET reminder_time={new_time} WHERE chat_id={chat_id}')
+        cur.close()
+        con.close()
+
+    except Exception as ex:
+        cur.close()
+        con.close()
+        print(f"Can't update reminder_time db ---> {ex}")
 

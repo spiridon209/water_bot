@@ -1,12 +1,13 @@
 from collections import defaultdict
 import time
+from datetime import datetime, timezone
 
 import config
 from calculations import get_female_amount, get_male_amount, get_water_volume_per_hour
-from model import check_user, create_data, bot_on, bot_off, check_bot_status, remove
+from model import check_user, create_data, bot_on, bot_off, check_bot_status, remove, add_reminder_time
 import my_parser
-from view import send_message
-from timezones import get_user_current_time_utc
+from view import send_message_per_hour
+from timezones import get_user_utc_0
 
 import telebot
 from telebot import types
@@ -93,8 +94,8 @@ def get_user_hometown(message):
     user_time_zone = my_parser.get_utc(hometown)
     info_about_user['time_zone'] = user_time_zone
 
-    user_time = get_user_current_time_utc(user_time_zone)
-    info_about_user['reminder_time'] = user_time
+    # user_time = get_user_current_time_utc(user_time_zone)
+    # info_about_user['reminder_time'] = user_time
 
 
     bot.send_message(chat_id=message.chat.id, text=f"Во сколько вы обычно просыпаетесь ?")
@@ -135,8 +136,13 @@ def get_user_sleep_time(message):
                                                                              info_about_user['sleep'],
                                                                              info_about_user['daily_value_of_water'])
 
+        wake_up_utc0, sleep_ust0 = get_user_utc_0(info_about_user['time_zone'], info_about_user['wakeup'],
+                                                  info_about_user['sleep'])
+        info_about_user['wakeup'] = wake_up_utc0
+        info_about_user['sleep'] = sleep_ust0
+
         #info_about_user['bot_status'] = 'on'
-        info_about_user['reminder_time'] += 1
+        # info_about_user['reminder_time'] += 1
         print(info_about_user)
         create_data(info_about_user)
         control_the_bot(message)
@@ -162,10 +168,16 @@ def callback_gender_handler(callback_query):
     if status == DONE:
         if text == '1) Запустить бота':
             bot_on(message)
+
+            current_time = datetime.now(timezone.utc)
+            time = str(current_time).split()[-1].split(':')
+            reminder_time = float(f'{time[0]}.{time[1]}') + 1
+            add_reminder_time(message, reminder_time) # реализовать
+
             bot.send_message(chat_id=message.chat.id,
                              text=f"Бот запущен, теперь он будет напоминать пить воду каждый час!/n"
                              f"Самое время выпить {info_about_user['water_value_per_hour']}мл воды")
-            send_message(message)  # тут запускается таймлуп
+            send_message_per_hour(message)  # тут запускается таймлуп
             print('sending')
 
         if text == '2) Изменить данные о себе':
