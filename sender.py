@@ -36,7 +36,7 @@ def send_message_per_hour(bot, message, status):
             user_time = float(f'{time[0]}.{time[1]}')
             good_morning = wakeup + 1
 
-            if sleep >= 0 and sleep < 12:
+            if sleep >= 0 and sleep < 12:  # смотри сюда Иван!!!!
                 sleep += 24
                 wakeup += 24
                 user_time += 24

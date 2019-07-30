@@ -148,7 +148,7 @@ def bot_on(message):
         return
 
 
-def update_values_of_water(chat_id, daily_value, current_value, value_per_hour):
+def update_values_of_water(user_id, daily_value, current_value, value_per_hour):
     con = sqlite3.connect("bot.db")
     cur = con.cursor()
 
@@ -156,10 +156,10 @@ def update_values_of_water(chat_id, daily_value, current_value, value_per_hour):
         current_value -= value_per_hour
 
         if value_per_hour > current_value:
-            cur.execute(f'UPDATE user SET current_value_of_water={daily_value} WHERE chat_id={chat_id}')
+            cur.execute(f'UPDATE user SET current_value_of_water={daily_value} WHERE user_id={user_id}')
             con.commit()
         else:
-            cur.execute(f'UPDATE user SET current_value_of_water={current_value} WHERE chat_id={chat_id}')  # возможно сделать изменение тут чтобы не писать в базу когда не надо
+            cur.execute(f'UPDATE user SET current_value_of_water={current_value} WHERE user_id={user_id}')  # возможно сделать изменение тут чтобы не писать в базу когда не надо
             con.commit()
 
         cur.close()
@@ -171,12 +171,12 @@ def update_values_of_water(chat_id, daily_value, current_value, value_per_hour):
         con.close()
 
 
-def get_reminder_time():
+def get_info_about_active_users():
     con = sqlite3.connect("bot.db")
     cur = con.cursor()
 
     try:
-        cur.execute(f'SELECT chat_id, reminder_time from user WHERE bot_status=on')
+        cur.execute(f'SELECT * from user WHERE bot_status="on"')
         data_from_db = cur.fetchall()
         cur.close()
         con.close()
@@ -200,15 +200,15 @@ def add_reminder_time(message, reminder_time):
     except Exception as ex:
         cur.close()
         con.close()
-        print(f"Can't update reminder_time db ---> {ex}")
+        print(f"Can't add reminder_time db ---> {ex}")
 
 
-def update_reminder_time(new_time, chat_id):
+def update_reminder_time(new_time, user_id):
     con = sqlite3.connect("bot.db")
     cur = con.cursor()
 
     try:
-        cur.execute(f'UPDATE user SET reminder_time={new_time} WHERE chat_id={chat_id}')
+        cur.execute(f'UPDATE user SET reminder_time={new_time} WHERE chat_id={user_id}')
         cur.close()
         con.close()
 
@@ -217,3 +217,67 @@ def update_reminder_time(new_time, chat_id):
         con.close()
         print(f"Can't update reminder_time db ---> {ex}")
 
+
+def reset_current_value(user_id, daily_value_of_water):
+    con = sqlite3.connect("bot.db")
+    cur = con.cursor()
+
+    try:
+        cur.execute(f'SELECT daily_value_of_water from user WHERE user_id={user_id}')
+        daily = cur.fetchone()[0]
+        cur.execute(f'UPDATE user SET current_value_of_water={daily_value_of_water} WHERE user_id={user_id}')
+        con.commit()
+
+    except Exception:
+        print('Reset current value of water error')
+
+    finally:
+        cur.close()
+        con.close()
+        return
+
+def get_message_text(user_bio):
+
+
+    '''
+    :return: Реализовать! Чекает текущее время и сравнивает с подъемом и сном, так же сколько воды осталось.
+    в зависимости от этого возвращает текст сообщения которое будет отправлено пользователю из вью.
+    '''
+
+    sleep = user_bio[7]
+    wakeup = user_bio[6]
+    user_time = user_bio[-1]
+    current = user_bio[9]
+
+    if sleep >= 0 and sleep < 12:  # смотри сюда Иван!!!!
+        sleep += 24
+        wakeup += 24
+        user_time += 24
+
+    if user_time == wakeup:
+        current -= user_bio[-3]
+        text = f'Доброе утро! Пора выпить {user_bio[-3]}мл воды, осталось {current}мл.'
+        update_values_of_water(user_id=user_bio[0], daily_value=user_bio[8],
+                               current_value=user_bio[9], value_per_hour=user_bio[11])
+        update_reminder_time(new_time=user_bio[-1] + 1, user_id=user_bio[0])
+        return text
+
+    if user_time > sleep and current >= 0:
+        text = f'Сегодня вы употребили не достаточно воды. Ничего страшного! Завтра у вас всё получится!'
+        reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
+        update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
+        return text
+
+    if user_time > sleep and current <= 0:
+        text = 'Сегодня вы употребили свою суточную норму воды, хорошая работа!'
+        update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
+        reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
+        return text
+
+    if user_time > wakeup and user_time < sleep:
+        current -= user_bio[-3]
+        text = f'Пора выпить {user_bio[-3]}мл воды, осталось {current}мл.'
+        update_values_of_water(user_id=user_bio[0], daily_value=user_bio[8],
+                               current_value=user_bio[9], value_per_hour=user_bio[11])
+        update_reminder_time(new_time=user_bio[-1] + 1, user_id=user_bio[0])
+        return text
