@@ -67,15 +67,13 @@ def remove(message):
 
     try:
         cur.execute(f'DELETE from user WHERE chat_id={message.chat.id}')
+        con.commit()
 
     except Exception:
-        print('Remove error')
-
-    finally:
-        con.commit()
         cur.close()
         con.close()
-        return
+        print('Remove error')
+
 
 
 # def update_current_value(message):
@@ -194,6 +192,7 @@ def add_reminder_time(message, reminder_time):
 
     try:
         cur.execute(f'UPDATE user SET reminder_time={reminder_time} WHERE chat_id={message.chat.id}')
+        con.commit()
         cur.close()
         con.close()
 
@@ -209,6 +208,7 @@ def update_reminder_time(new_time, user_id):
 
     try:
         cur.execute(f'UPDATE user SET reminder_time={new_time} WHERE chat_id={user_id}')
+        con.commit()
         cur.close()
         con.close()
 
@@ -236,6 +236,7 @@ def reset_current_value(user_id, daily_value_of_water):
         con.close()
         return
 
+
 def get_message_text(user_bio):
 
 
@@ -248,6 +249,7 @@ def get_message_text(user_bio):
     wakeup = user_bio[6]
     user_time = user_bio[-1]
     current = user_bio[9]
+    print('get_message_text')
 
     if sleep >= 0 and sleep < 12:  # смотри сюда Иван!!!!
         sleep += 24

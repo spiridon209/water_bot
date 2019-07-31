@@ -175,8 +175,7 @@ def callback_gender_handler(callback_query):
             add_reminder_time(message, reminder_time) # реализовать
 
             bot.send_message(chat_id=message.chat.id,
-                             text=f"Бот запущен, теперь он будет напоминать пить воду каждый час!/n"
-                             f"Самое время выпить {info_about_user['water_value_per_hour']}мл воды")
+                             text="Бот запущен, теперь он будет напоминать пить воду каждый час!")
             send_message_per_hour(message)  # тут запускается таймлуп
             print('sending')
 
@@ -199,6 +198,6 @@ def callback_gender_handler(callback_query):
 if __name__ == '__main__':
     while True:
         try:
-            bot.polling(none_stop=True, interval=1, timeout=1)
+            bot.polling(none_stop=True, interval=0, timeout=0)
         except:
             time.sleep(5)

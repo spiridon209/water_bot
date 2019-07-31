@@ -19,15 +19,22 @@ def send_message_per_hour(bot):
         list_of_users = get_info_about_active_users()
 
         for i in list_of_users:
+            print('send_message')
+            print(current_utc_time)
+            print(i[13])
             if i[-1] == current_utc_time:
                 text = get_message_text(user_bio=i)
                 bot.send_message(chat_id=i[1], text=text)
 
+    tl.start()
+
     while True:
         try:
-            tl.start()
-        except Exception:
-            time.sleep(5)
+            time.sleep(1)
+        except Exception as ex:
+            print(ex)
+            tl.stop()
+            break
 
 "Сейчас(вроде) всё время хранится в ютс0 тут надо получать chat_id, reminder_time, всех юзеров у которых" \
 "бот статус = ОН, далее сравниваем совпадает ли текущее время с reminder_time если да то шлем сообшение и увеличиваем время на 1." \
