@@ -95,10 +95,6 @@ def get_user_hometown(message):
     user_time_zone = my_parser.get_utc(hometown)
     info_about_user['time_zone'] = user_time_zone
 
-    # user_time = get_user_current_time_utc(user_time_zone)
-    # info_about_user['reminder_time'] = user_time
-
-
     bot.send_message(chat_id=message.chat.id, text=f"Во сколько вы обычно просыпаетесь ?")
     update_state(message, WAKEUP)
 
@@ -142,8 +138,6 @@ def get_user_sleep_time(message):
         info_about_user['wakeup'] = wake_up_utc0
         info_about_user['sleep'] = sleep_ust0
 
-        #info_about_user['bot_status'] = 'on'
-        # info_about_user['reminder_time'] += 1
         print(info_about_user)
         create_data(info_about_user)
         control_the_bot(message)
@@ -194,9 +188,6 @@ def callback_gender_handler(callback_query):
             bot_off(message)
             bot.send_message(chat_id=message.chat.id, text='Бот остановлен!')
             control_the_bot(message)
-
-
-
 
 
 if __name__ == '__main__':

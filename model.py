@@ -75,26 +75,6 @@ def remove(message):
         print('Remove error')
 
 
-
-# def update_current_value(message):
-#     con = sqlite3.connect("bot.db")
-#     cur = con.cursor()
-#
-#     try:
-#         cur.execute(f'SELECT daily_value_of_water from user WHERE chat_id={message.chat.id}')
-#         daily = cur.fetchone()[0]
-#         cur.execute(f'UPDATE user SET current_value_of_water={daily} WHERE chat_id={message.chat.id}')
-#         con.commit()
-#
-#     except Exception:
-#         print('Update current value of water error')
-#
-#     finally:
-#         cur.close()
-#         con.close()
-#         return
-
-
 def check_bot_status(message):
     con = sqlite3.connect("bot.db")
     cur = con.cursor()
@@ -191,7 +171,7 @@ def add_reminder_time(message, reminder_time):
     cur = con.cursor()
 
     if reminder_time % int(reminder_time) == 0.6:
-        new_time = int(reminder_time) + 1
+        reminder_time = int(reminder_time) + 1
 
     try:
         cur.execute(f'UPDATE user SET reminder_time={reminder_time} WHERE chat_id={message.chat.id}')
@@ -231,8 +211,6 @@ def reset_current_value(user_id, daily_value_of_water):
     cur = con.cursor()
 
     try:
-        cur.execute(f'SELECT daily_value_of_water from user WHERE user_id={user_id}')
-        daily = cur.fetchone()[0]
         cur.execute(f'UPDATE user SET current_value_of_water={daily_value_of_water} WHERE user_id={user_id}')
         con.commit()
 
@@ -247,10 +225,8 @@ def reset_current_value(user_id, daily_value_of_water):
 
 def get_message_text(user_bio):
 
-
     '''
-    :return: Реализовать! Чекает текущее время и сравнивает с подъемом и сном, так же сколько воды осталось.
-    в зависимости от этого возвращает текст сообщения которое будет отправлено пользователю из вью.
+    :return: The message that will be sent to a user.s
     '''
 
     sleep = user_bio[7]
@@ -259,7 +235,7 @@ def get_message_text(user_bio):
     current_value_of_water = user_bio[9]
     print('get_message_text')
 
-    if sleep >= 0 and sleep < 12:  # смотри сюда Иван!!!!
+    if sleep >= 0 and sleep < 12:
         sleep += 24
         wakeup += 24
         user_time += 24
