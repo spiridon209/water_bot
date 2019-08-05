@@ -192,8 +192,6 @@ def update_reminder_time(new_time, user_id):
     if new_time % int(new_time) == 0.6:
         new_time = int(new_time) + 1
 
-    print(f"{new_time} that is new time")
-
     try:
         cur.execute(f'UPDATE user SET reminder_time={new_time} WHERE user_id={user_id}')
         con.commit()
@@ -233,7 +231,6 @@ def get_message_text(user_bio):
     wakeup = user_bio[6]
     user_time = user_bio[-1]
     current_value_of_water = user_bio[9]
-    print('get_message_text')
 
     if sleep >= 0 and sleep < 12:
         sleep += 24

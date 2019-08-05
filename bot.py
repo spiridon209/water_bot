@@ -138,7 +138,6 @@ def get_user_sleep_time(message):
         info_about_user['wakeup'] = wake_up_utc0
         info_about_user['sleep'] = sleep_ust0
 
-        print(info_about_user)
         create_data(info_about_user)
         control_the_bot(message)
 
@@ -172,8 +171,6 @@ def callback_gender_handler(callback_query):
             bot.send_message(chat_id=message.chat.id,
                              text="Бот запущен, теперь он будет напоминать пить воду каждый час!")
 
-            print('sending')
-
         if text == '2) Изменить данные о себе':
             status = check_bot_status(message)
             if status == 'on':
@@ -194,19 +191,14 @@ if __name__ == '__main__':
 
     tl = Timeloop()
 
-
     @tl.job(interval=timedelta(seconds=15))
     def send_message():
         current_time = get_current_utc_time()
         time = str(current_time).split()[-1].split(':')
         current_utc_time = float(f'{time[0]}.{time[1]}')
         list_of_users = get_info_about_active_users()
-        print(list_of_users)
 
         for i in list_of_users:
-            print('send_message')
-            print(current_utc_time)
-            print(i[13])
             if i[-1] == current_utc_time:
                 text = get_message_text(user_bio=i)
                 bot.send_message(chat_id=i[1], text=text)
