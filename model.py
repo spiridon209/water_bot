@@ -190,6 +190,9 @@ def add_reminder_time(message, reminder_time):
     con = sqlite3.connect("bot.db")
     cur = con.cursor()
 
+    if reminder_time % int(reminder_time) == 0.6:
+        new_time = int(reminder_time) + 1
+
     try:
         cur.execute(f'UPDATE user SET reminder_time={reminder_time} WHERE chat_id={message.chat.id}')
         con.commit()
@@ -206,8 +209,13 @@ def update_reminder_time(new_time, user_id):
     con = sqlite3.connect("bot.db")
     cur = con.cursor()
 
+    if new_time % int(new_time) == 0.6:
+        new_time = int(new_time) + 1
+
+    print(f"{new_time} that is new time")
+
     try:
-        cur.execute(f'UPDATE user SET reminder_time={new_time} WHERE chat_id={user_id}')
+        cur.execute(f'UPDATE user SET reminder_time={new_time} WHERE user_id={user_id}')
         con.commit()
         cur.close()
         con.close()
@@ -248,7 +256,7 @@ def get_message_text(user_bio):
     sleep = user_bio[7]
     wakeup = user_bio[6]
     user_time = user_bio[-1]
-    current = user_bio[9]
+    current_value_of_water = user_bio[9]
     print('get_message_text')
 
     if sleep >= 0 and sleep < 12:  # смотри сюда Иван!!!!
@@ -257,29 +265,29 @@ def get_message_text(user_bio):
         user_time += 24
 
     if user_time == wakeup:
-        current -= user_bio[-3]
-        text = f'Доброе утро! Пора выпить {user_bio[-3]}мл воды, осталось {current}мл.'
+        current_value_of_water -= user_bio[-3]
+        text = f'Доброе утро! Пора выпить {user_bio[-3]}мл воды, осталось {current_value_of_water}мл.'
         update_values_of_water(user_id=user_bio[0], daily_value=user_bio[8],
                                current_value=user_bio[9], value_per_hour=user_bio[11])
-        update_reminder_time(new_time=user_bio[-1] + 1, user_id=user_bio[0])
+        update_reminder_time(new_time=round(user_bio[-1] + 0.01, 2), user_id=user_bio[0])
         return text
 
-    if user_time > sleep and current >= 0:
+    if user_time >= sleep and current_value_of_water >= 0:
         text = f'Сегодня вы употребили не достаточно воды. Ничего страшного! Завтра у вас всё получится!'
         reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
         update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
         return text
 
-    if user_time > sleep and current <= 0:
+    if user_time >= sleep and current_value_of_water <= 0:
         text = 'Сегодня вы употребили свою суточную норму воды, хорошая работа!'
         update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
         reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
         return text
 
     if user_time > wakeup and user_time < sleep:
-        current -= user_bio[-3]
-        text = f'Пора выпить {user_bio[-3]}мл воды, осталось {current}мл.'
+        current_value_of_water -= user_bio[-3]
+        text = f'Пора выпить {user_bio[-3]}мл воды, осталось {current_value_of_water}мл.'
         update_values_of_water(user_id=user_bio[0], daily_value=user_bio[8],
                                current_value=user_bio[9], value_per_hour=user_bio[11])
-        update_reminder_time(new_time=user_bio[-1] + 1, user_id=user_bio[0])
+        update_reminder_time(new_time=round(user_bio[-1] + 0.01, 2), user_id=user_bio[0])
         return text

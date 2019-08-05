@@ -1,13 +1,14 @@
 from collections import defaultdict
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 import config
 from calculations import get_female_amount, get_male_amount, get_water_volume_per_hour
 from model import check_user, create_data, bot_on, bot_off, check_bot_status, remove, add_reminder_time
 import my_parser
-from view import send_message_per_hour
-from timezones import get_user_utc_0
+from timezones import get_user_utc_0, get_current_utc_time
+from model import get_message_text, get_info_about_active_users
+from timeloop import Timeloop
 
 import telebot
 from telebot import types
@@ -171,12 +172,12 @@ def callback_gender_handler(callback_query):
 
             current_time = datetime.now(timezone.utc)
             time = str(current_time).split()[-1].split(':')
-            reminder_time = float(f'{time[0]}.{time[1]}') + 1
+            reminder_time = round(float(f'{time[0]}.{time[1]}') + 0.01, 2)
             add_reminder_time(message, reminder_time) # реализовать
 
             bot.send_message(chat_id=message.chat.id,
                              text="Бот запущен, теперь он будет напоминать пить воду каждый час!")
-            send_message_per_hour(message)  # тут запускается таймлуп
+
             print('sending')
 
         if text == '2) Изменить данные о себе':
@@ -195,9 +196,42 @@ def callback_gender_handler(callback_query):
             control_the_bot(message)
 
 
+
+
+
 if __name__ == '__main__':
+
+    tl = Timeloop()
+
+
+    @tl.job(interval=timedelta(seconds=15))
+    def send_message():
+        current_time = get_current_utc_time()
+        time = str(current_time).split()[-1].split(':')
+        current_utc_time = float(f'{time[0]}.{time[1]}')
+        list_of_users = get_info_about_active_users()
+        print(list_of_users)
+
+        for i in list_of_users:
+            print('send_message')
+            print(current_utc_time)
+            print(i[13])
+            if i[-1] == current_utc_time:
+                text = get_message_text(user_bio=i)
+                bot.send_message(chat_id=i[1], text=text)
+
+    tl.start()
+
     while True:
         try:
-            bot.polling(none_stop=True, interval=0, timeout=0)
-        except:
-            time.sleep(5)
+            time.sleep(1)
+        except KeyboardInterrupt:
+            tl.stop()
+            break
+        break
+
+    while True:
+        try:
+            bot.polling(none_stop=True, interval=1, timeout=0)
+        except KeyboardInterrupt:
+            time.sleep(10)
