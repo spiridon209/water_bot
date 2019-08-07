@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 # make database
-con = sqlite3.connect("bot.db")
-cur = con.cursor()
 
-sql = '''
-CREATE TABLE user (
+
+def make_table():
+    con = sqlite3.connect("bot.db")
+    cur = con.cursor()
+
+    sql = '''
+CREATE TABLE IF NOT EXISTS user (
     user_id INTEGER PRIMARY KEY,
     chat_id REAL,
     name TEXT,
@@ -22,9 +25,6 @@ CREATE TABLE user (
     reminder_time REAL
 );
 '''
-
-
-if __name__ == '__main__':
 
     try:
         cur.executescript(sql)

@@ -9,13 +9,14 @@ import my_parser
 from timezones import get_user_utc_0, get_current_utc_time
 from model import get_message_text, get_info_about_active_users
 from timeloop import Timeloop
+from make_db import make_table
 
 import telebot
 from telebot import types
 
-
-telebot.apihelper.proxy = config.proxy
+# telebot.apihelper.proxy = config.proxy
 bot = telebot.TeleBot(config.token)
+make_table()
 gender = ['Мужчина', 'Женщина']
 control = ['1) Запустить бота', '2) Изменить данные о себе', '3) Остановить бота']
 START, NAME, GENDER, WEIGHT, HOMETOWN, WAKEUP, SLEEP, DONE, FINISH = range(9)  # memory of bot
