@@ -1,0 +1,8 @@
+PySocks==1.6.8
+beautifulsoup4==4.7.1
+pyTelegramBotAPI==3.6.6
+requests==2.21.0
+timeloop==1.0.2
+urllib3==1.24.2
+gunicorn==19.9.0
+lxml==4.3.3
