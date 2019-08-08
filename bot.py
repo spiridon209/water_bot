@@ -1,6 +1,7 @@
 from collections import defaultdict
 import time
 from datetime import datetime, timezone, timedelta
+import os
 
 import config
 from calculations import get_female_amount, get_male_amount, get_water_volume_per_hour
@@ -11,11 +12,16 @@ from model import get_message_text, get_info_about_active_users
 from timeloop import Timeloop
 from make_db import make_table
 
+from dotenv import load_dotenv
 import telebot
 from telebot import types
 
+load_dotenv()
+DEBUG = os.getenv('DEBUG') == 'TRUE'
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+
 telebot.apihelper.proxy = config.proxy
-bot = telebot.TeleBot(config.token)
+bot = telebot.TeleBot(BOT_TOKEN)
 make_table()
 gender = ['Мужчина', 'Женщина']
 control = ['1) Запустить бота', '2) Изменить данные о себе', '3) Остановить бота']
