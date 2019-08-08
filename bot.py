@@ -100,10 +100,12 @@ def get_user_hometown(message):
     hometown = message.text
     info_about_user['hometown'] = hometown
     user_time_zone = my_parser.get_utc(hometown)
-    info_about_user['time_zone'] = user_time_zone
-
-    bot.send_message(chat_id=message.chat.id, text=f"Во сколько вы обычно просыпаетесь ?")
-    update_state(message, WAKEUP)
+    if user_time_zone == None:
+        bot.send_message(chat_id=message.chat.id, text=f"Не могу найти город, возможно вы допустили ошибку в названии ?")
+    else:
+        info_about_user['time_zone'] = user_time_zone
+        bot.send_message(chat_id=message.chat.id, text=f"Во сколько вы обычно просыпаетесь ?")
+        update_state(message, WAKEUP)
 
 
 @bot.message_handler(func=lambda message: get_state(message) == WAKEUP)
@@ -172,9 +174,8 @@ def callback_gender_handler(callback_query):
 
             current_time = datetime.now(timezone.utc)
             time = str(current_time).split()[-1].split(':')
-            reminder_time = round(float(f'{time[0]}.{time[1]}') + 0.01, 2)
-            add_reminder_time(message, reminder_time) # реализовать
-
+            reminder_time = round(float(f'{time[0]}.{time[1]}') + 0.1, 2)
+            add_reminder_time(message, reminder_time)
             bot.send_message(chat_id=message.chat.id,
                              text="Бот запущен, теперь он будет напоминать пить воду каждый час!")
 

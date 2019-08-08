@@ -1,6 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-from config import url
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+url = os.getenv('URL')
 
 def get_utc(city, url = url):
 
@@ -14,3 +18,5 @@ def get_utc(city, url = url):
         return utc
     except IndexError:
         get_utc(city)
+    except AttributeError:
+        return None
