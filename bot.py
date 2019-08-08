@@ -14,7 +14,7 @@ from make_db import make_table
 import telebot
 from telebot import types
 
-# telebot.apihelper.proxy = config.proxy
+telebot.apihelper.proxy = config.proxy
 bot = telebot.TeleBot(config.token)
 make_table()
 gender = ['Мужчина', 'Женщина']
@@ -202,7 +202,10 @@ if __name__ == '__main__':
         for i in list_of_users:
             if i[-1] == current_utc_time:
                 text = get_message_text(user_bio=i)
-                bot.send_message(chat_id=i[1], text=text)
+                try:
+                    bot.send_message(chat_id=i[1], text=text)
+                except Exception as ex:
+                    print(f"Can't send message to user {i} ---> {ex}")
 
     tl.start()
 
