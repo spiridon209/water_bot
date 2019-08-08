@@ -106,3 +106,4 @@ venv.bak/
 #
 config.py
 bot.db
+.env
