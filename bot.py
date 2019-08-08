@@ -20,7 +20,7 @@ load_dotenv()
 DEBUG = os.getenv('DEBUG') == 'TRUE'
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
-telebot.apihelper.proxy = config.proxy
+#telebot.apihelper.proxy = config.proxy
 bot = telebot.TeleBot(BOT_TOKEN)
 make_table()
 gender = ['Мужчина', 'Женщина']
