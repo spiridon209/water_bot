@@ -174,7 +174,7 @@ def callback_gender_handler(callback_query):
 
             current_time = datetime.now(timezone.utc)
             time = str(current_time).split()[-1].split(':')
-            reminder_time = round(float(f'{time[0]}.{time[1]}') + 0.1, 2)
+            reminder_time = round(float(f'{time[0]}.{time[1]}') + 1, 2)
             add_reminder_time(message, reminder_time)
             bot.send_message(chat_id=message.chat.id,
                              text="Бот запущен, теперь он будет напоминать пить воду каждый час!")

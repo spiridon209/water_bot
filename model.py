@@ -242,7 +242,7 @@ def get_message_text(user_bio):
         text = f'Доброе утро! Пора выпить {user_bio[-3]}мл воды, осталось {current_value_of_water}мл.'
         update_values_of_water(user_id=user_bio[0], daily_value=user_bio[8],
                                current_value=user_bio[9], value_per_hour=user_bio[11])
-        update_reminder_time(new_time=round(user_bio[-1] + 0.1, 2), user_id=user_bio[0])
+        update_reminder_time(new_time=round(user_bio[-1] + 1, 2), user_id=user_bio[0])
         return text
 
     if user_time >= sleep and current_value_of_water >= 0:
@@ -262,5 +262,5 @@ def get_message_text(user_bio):
         text = f'Пора выпить {user_bio[-3]}мл воды, осталось {current_value_of_water}мл.'
         update_values_of_water(user_id=user_bio[0], daily_value=user_bio[8],
                                current_value=user_bio[9], value_per_hour=user_bio[11])
-        update_reminder_time(new_time=round(user_bio[-1] + 0.1, 2), user_id=user_bio[0])
+        update_reminder_time(new_time=round(user_bio[-1] + 1, 2), user_id=user_bio[0])
         return text
