@@ -1,5 +1,5 @@
 import sqlite3
-
+import datetime
 
 def check_user(message):
     """The function checks the presence of the user in the database."""
@@ -224,7 +224,7 @@ def reset_current_value(user_id, daily_value_of_water):
 def get_message_text(user_bio):
 
     '''
-    :return: The message that will be sent to a user.s
+    :return: The message that will be sent to a user
     '''
 
     sleep = user_bio[7]
@@ -235,7 +235,6 @@ def get_message_text(user_bio):
     if sleep >= 0 and sleep < 12:
         sleep += 24
         wakeup += 24
-        user_time += 24
 
     if user_time == wakeup:
         current_value_of_water -= user_bio[-3]
@@ -245,19 +244,19 @@ def get_message_text(user_bio):
         update_reminder_time(new_time=round(user_bio[-1] + 1, 2), user_id=user_bio[0])
         return text
 
-    if user_time >= sleep and user_time < wakeup and current_value_of_water >= 0:
-        text = f'Сегодня вы употребили не достаточно воды. Ничего страшного! Завтра у вас всё получится!'
-        reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
-        update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
-        return text
-
-    if user_time >= sleep and user_time < wakeup and current_value_of_water <= 0:
+    elif current_value_of_water <= 0:
         text = 'Сегодня вы употребили свою суточную норму воды, хорошая работа!'
         update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
         reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
         return text
 
-    if user_time > wakeup and user_time < sleep:
+    elif user_time >= sleep:
+        text = f'Сегодня вы употребили не достаточно воды. Ничего страшного! Завтра у вас всё получится!'
+        reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
+        update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
+        return text
+
+    else:
         current_value_of_water -= user_bio[-3]
         text = f'Пора выпить {user_bio[-3]}мл воды, осталось {current_value_of_water}мл.'
         update_values_of_water(user_id=user_bio[0], daily_value=user_bio[8],
