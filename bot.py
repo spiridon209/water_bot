@@ -61,6 +61,7 @@ def send_welcome(message):
         update_state(message, DONE)
         bot.send_message(chat_id=message.chat.id,
                          text=f'Привет {name} ваша суточная норма потребления воды составляет {value}мл.')
+        control_the_bot(message)
     else:
         bot.send_message(chat_id=message.chat.id,
                          text="Привет, пожалуйста, скажите ваше имя, чтобы я знал как к вам обращаться.")

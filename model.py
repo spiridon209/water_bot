@@ -245,13 +245,13 @@ def get_message_text(user_bio):
         update_reminder_time(new_time=round(user_bio[-1] + 1, 2), user_id=user_bio[0])
         return text
 
-    if user_time >= sleep and current_value_of_water >= 0:
+    if user_time >= sleep and user_time < wakeup and current_value_of_water >= 0:
         text = f'Сегодня вы употребили не достаточно воды. Ничего страшного! Завтра у вас всё получится!'
         reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
         update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
         return text
 
-    if user_time >= sleep and current_value_of_water <= 0:
+    if user_time >= sleep and user_time < wakeup and current_value_of_water <= 0:
         text = 'Сегодня вы употребили свою суточную норму воды, хорошая работа!'
         update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
         reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
