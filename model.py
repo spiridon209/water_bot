@@ -1,5 +1,5 @@
 import sqlite3
-import datetime
+
 
 def check_user(message):
     """The function checks the presence of the user in the database."""
