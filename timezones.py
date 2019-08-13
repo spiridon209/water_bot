@@ -7,8 +7,8 @@ def get_user_utc_0(user_tz, wake_up, sleep):
                          'UTC+6': 6, 'UTC+7': 7, 'UTC+8': 8, 'UTC+9': 9,
                          'UTC+10': 10, 'UTC+11': 11, 'UTC+12': 12}
 
-    wake_up -= time_zones_russia[user_tz]
-    sleep -= time_zones_russia[user_tz]
+    wake_up -= round(time_zones_russia[user_tz], 2)
+    sleep -= round(time_zones_russia[user_tz], 2)
     return wake_up, sleep
 
 
