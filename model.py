@@ -234,7 +234,7 @@ def get_message_text(user_bio):
 
     if sleep >= 0 and sleep < 12:
         sleep += 24
-        wakeup += 24
+        user_time += 24
 
     if user_time == wakeup:
         current_value_of_water -= user_bio[-3]
