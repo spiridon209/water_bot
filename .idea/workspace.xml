@@ -28,8 +28,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="236" column="17" selection-start-line="236" selection-start-column="17" selection-end-line="236" selection-end-column="17" />
+            <state relative-caret-position="153">
+              <caret line="252" column="4" lean-forward="true" selection-start-line="252" selection-start-column="6" selection-end-line="256" selection-end-column="21" />
+              <folding>
+                <marker date="1565799502480" expanded="true" signature="6642:6985" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -154,6 +157,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -165,7 +169,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -494,7 +497,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565727547118</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="new version of project">
+      <created>1565795325770</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1565795325770</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -625,8 +635,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="236" column="17" selection-start-line="236" selection-start-column="17" selection-end-line="236" selection-end-column="17" />
+        <state relative-caret-position="153">
+          <caret line="252" column="4" lean-forward="true" selection-start-line="252" selection-start-column="6" selection-end-line="256" selection-end-column="21" />
+          <folding>
+            <marker date="1565799502480" expanded="true" signature="6642:6985" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>

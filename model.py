@@ -250,11 +250,11 @@ def get_message_text(user_bio):
         reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
         return text
 
-    elif user_time >= sleep and user_time - 24 < wakeup:
-        text = f'Сегодня вы употребили не достаточно воды. Ничего страшного! Завтра у вас всё получится!'
-        reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
-        update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
-        return text
+    # elif user_time >= sleep and (user_time - 24) < wakeup:
+    #     text = f'Сегодня вы употребили не достаточно воды. Ничего страшного! Завтра у вас всё получится!'
+    #     reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
+    #     update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
+    #     return text
 
     else:
         current_value_of_water -= user_bio[-3]
