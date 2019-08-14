@@ -204,12 +204,12 @@ if __name__ == '__main__':
     def send_message():
         current_time = get_current_utc_time()
         time = str(current_time).split()[-1].split(':')
-        current_utc_time = float(f'{time[0]}.{time[1]}')
+        current_utc_time = round(float(f'{time[0]}.{time[1]}'), 2)
         list_of_users = get_info_about_active_users()
 
         for i in list_of_users:
             if i[-1] == current_utc_time:
-                text = get_message_text(user_bio=i)
+                text = get_message_text(user_bio=i, current_utc_time=current_utc_time)
                 try:
                     bot.send_message(chat_id=i[1], text=text)
                 except Exception as ex:

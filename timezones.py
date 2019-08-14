@@ -14,3 +14,5 @@ def get_user_utc_0(user_tz, wake_up, sleep):
 
 def get_current_utc_time():
     return datetime.now(timezone.utc)
+
+print(get_current_utc_time())
