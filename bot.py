@@ -206,6 +206,7 @@ if __name__ == '__main__':
         time = str(current_time).split()[-1].split(':')
         current_utc_time = round(float(f'{time[0]}.{time[1]}'), 2)
         list_of_users = get_info_about_active_users()
+        print(list_of_users)
 
         for i in list_of_users:
             if i[-1] == current_utc_time:
