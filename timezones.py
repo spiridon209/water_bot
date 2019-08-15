@@ -9,6 +9,13 @@ def get_user_utc_0(user_tz, wake_up, sleep):
 
     wake_up -= round(time_zones_russia[user_tz], 2)
     sleep -= round(time_zones_russia[user_tz], 2)
+
+    if sleep < 0:
+        sleep += 24
+
+    if wake_up < 0:
+        wake_up += 24
+
     return wake_up, sleep
 
 

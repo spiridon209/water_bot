@@ -112,7 +112,12 @@ def get_user_hometown(message):
 @bot.message_handler(func=lambda message: get_state(message) == WAKEUP)
 def get_user_wakeup_time(message):
     try:
-        wakeup = float(message.text)
+        wakeup = round(float(message.text), 2)
+        if wakeup > 24 or wakeup < 0:
+            bot.send_message(chat_id=message.chat.id,
+                             text=f"Невозможное значение! Формат времени 24ч.")
+            raise ValueError
+
     except ValueError:
         bot.send_message(chat_id=message.chat.id,
                          text=f"Упс, кажется данные введены не правильно, попробуйте еще раз. Пример ответа: 8.30")
@@ -125,7 +130,12 @@ def get_user_wakeup_time(message):
 @bot.message_handler(func=lambda message: get_state(message) == SLEEP)  # последний шаг, дальше расчет
 def get_user_sleep_time(message):
     try:
-        sleep = float(message.text)
+        sleep = round(float(message.text), 2)
+        if sleep > 24 or sleep < 0:
+            bot.send_message(chat_id=message.chat.id,
+                             text=f"Невозможное значение! Формат времени 24ч.")
+            raise ValueError
+
     except ValueError:
         bot.send_message(chat_id=message.chat.id,
                          text=f"Упс кажется данные введены не правильно, попробуйте еще раз. Пример ответа: 22.30")
