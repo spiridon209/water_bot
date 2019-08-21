@@ -3,7 +3,7 @@ import time
 from datetime import datetime, timezone, timedelta
 import os
 
-#import config
+import config
 from calculations import get_female_amount, get_male_amount, get_water_volume_per_hour
 from model import check_user, create_data, bot_on, bot_off, check_bot_status, remove, add_reminder_time
 import my_parser
@@ -16,11 +16,13 @@ from dotenv import load_dotenv
 import telebot
 from telebot import types
 
+
+telebot.apihelper.proxy = config.proxy
+
 load_dotenv()
 DEBUG = os.getenv('DEBUG') == 'TRUE'
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
-#telebot.apihelper.proxy = config.proxy
 bot = telebot.TeleBot(BOT_TOKEN)
 make_table()
 gender = ['Мужчина', 'Женщина']
@@ -56,7 +58,7 @@ def create_control_keyboard():
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     id, name, value = check_user(message)
-
+    print(type(id))
     if id == message.chat.id:
         update_state(message, DONE)
         bot.send_message(chat_id=message.chat.id,

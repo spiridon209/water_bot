@@ -1,18 +1,21 @@
-import sqlite3
+import psycopg2
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def check_user(message):
     """The function checks the presence of the user in the database."""
 
-    con = sqlite3.connect('bot.db')
+    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
     cur = con.cursor()
 
     try:
-        cur.execute(f'SELECT chat_id from user WHERE chat_id={message.chat.id}')
+        cur.execute(f"SELECT chat_id from users WHERE chat_id={message.chat.id}")
         id = cur.fetchone()[0]
-        cur.execute(f'SELECT name from user WHERE chat_id={id}')
+        cur.execute(f"SELECT name from users WHERE chat_id={id}")
         name = cur.fetchone()[0]
-        cur.execute(f'SELECT daily_value_of_water from user WHERE chat_id={id}')
+        cur.execute(f"SELECT daily_value_of_water from users WHERE chat_id={id}")
         value = cur.fetchone()[0]
         cur.close()
         con.close()
@@ -42,15 +45,17 @@ def create_data(data):
     bot_status = 'off'
     reminder_time = 0
 
-    con = sqlite3.connect("bot.db")
+    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
     cur = con.cursor()
 
     try:
-        cur.execute(f'INSERT INTO user VALUES(NULL, {id}, "{name}", "{gender}", {weight}, '
-                    f'"{hometown}", {wakeup}, {sleep}, {daily_value_of_water},'
-                    f'{current_value_of_water}, "{time_zone}", {water_value_per_hour},'
-                    f'"{bot_status}", {reminder_time})')
+        cur.execute(f"INSERT INTO users (chat_id, name, gender, weight, hometown, wakeup, sleep, daily_value_of_water, "
+                    f"current_value_of_water, time_zone, water_value_per_hour, bot_status, reminder_time) "
+                    f"VALUES({id}, '{name}', '{gender}', {weight}, '{hometown}', {wakeup}, {sleep}, "
+                    f"{daily_value_of_water}, {current_value_of_water}, '{time_zone}', "
+                    f"{water_value_per_hour}, '{bot_status}', {reminder_time})")
         con.commit()
+        print('DB IS EXIST')
 
     except Exception as ex:
         print(f'Create error {ex}')
@@ -62,11 +67,11 @@ def create_data(data):
 
 
 def remove(message):
-    con = sqlite3.connect("bot.db")
+    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
     cur = con.cursor()
 
     try:
-        cur.execute(f'DELETE from user WHERE chat_id={message.chat.id}')
+        cur.execute(f"DELETE from users WHERE chat_id={message.chat.id}")
         con.commit()
 
     except Exception:
@@ -76,11 +81,11 @@ def remove(message):
 
 
 def check_bot_status(message):
-    con = sqlite3.connect("bot.db")
+    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
     cur = con.cursor()
 
     try:
-        cur.execute(f'SELECT bot_status from user WHERE chat_id={message.chat.id}')
+        cur.execute(f"SELECT bot_status from users WHERE chat_id={message.chat.id}")
         bot_status = cur.fetchone()[0]
         return bot_status
 
@@ -93,11 +98,11 @@ def check_bot_status(message):
 
 
 def bot_off(message):
-    con = sqlite3.connect("bot.db")
+    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
     cur = con.cursor()
-    status = "'off'"
+    status = 'off'
     try:
-        cur.execute(f'UPDATE user SET bot_status={status} WHERE chat_id={message.chat.id}')
+        cur.execute(f"UPDATE users SET bot_status='{status}' WHERE chat_id={message.chat.id}")
         con.commit()
 
     except Exception as ex:
@@ -110,15 +115,16 @@ def bot_off(message):
 
 
 def bot_on(message):
-    con = sqlite3.connect("bot.db")
+    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
     cur = con.cursor()
-    status = "'on'"
+    status = 'on'
     try:
-        cur.execute(f'UPDATE user SET bot_status={status} WHERE chat_id={message.chat.id}')
+        cur.execute(f"UPDATE users SET bot_status='{status}' WHERE chat_id={message.chat.id}")
         con.commit()
+        print('BOT ON')
 
     except Exception as ex:
-        print(f"Can't stop the bot - {ex}")
+        print(f"Can't start the bot - {ex}")
 
     finally:
         cur.close()
@@ -127,17 +133,17 @@ def bot_on(message):
 
 
 def update_values_of_water(user_id, daily_value, current_value, value_per_hour):
-    con = sqlite3.connect("bot.db")
+    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
     cur = con.cursor()
 
     try:
         current_value -= value_per_hour
 
         if value_per_hour > current_value:
-            cur.execute(f'UPDATE user SET current_value_of_water={daily_value} WHERE user_id={user_id}')
+            cur.execute(f"UPDATE users SET current_value_of_water={daily_value} WHERE user_id={user_id}")
             con.commit()
         else:
-            cur.execute(f'UPDATE user SET current_value_of_water={current_value} WHERE user_id={user_id}')  # возможно сделать изменение тут чтобы не писать в базу когда не надо
+            cur.execute(f"UPDATE users SET current_value_of_water={current_value} WHERE user_id={user_id}")  # возможно сделать изменение тут чтобы не писать в базу когда не надо
             con.commit()
 
         cur.close()
@@ -150,11 +156,11 @@ def update_values_of_water(user_id, daily_value, current_value, value_per_hour):
 
 
 def get_info_about_active_users():
-    con = sqlite3.connect("bot.db")
+    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
     cur = con.cursor()
 
     try:
-        cur.execute(f'SELECT * from user WHERE bot_status="on"')
+        cur.execute(f"SELECT * from users WHERE bot_status='on'")
         data_from_db = cur.fetchall()
         cur.close()
         con.close()
@@ -167,14 +173,14 @@ def get_info_about_active_users():
 
 
 def add_reminder_time(message, reminder_time):
-    con = sqlite3.connect("bot.db")
+    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
     cur = con.cursor()
 
     if reminder_time % int(reminder_time) == 0.6:
         reminder_time = int(reminder_time) + 1
 
     try:
-        cur.execute(f'UPDATE user SET reminder_time={reminder_time} WHERE chat_id={message.chat.id}')
+        cur.execute(f"UPDATE users SET reminder_time={reminder_time} WHERE chat_id={message.chat.id}")
         con.commit()
         cur.close()
         con.close()
@@ -186,14 +192,14 @@ def add_reminder_time(message, reminder_time):
 
 
 def update_reminder_time(new_time, user_id):
-    con = sqlite3.connect("bot.db")
+    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
     cur = con.cursor()
 
     if new_time % int(new_time) == 0.6:
         new_time = int(new_time) + 1
 
     try:
-        cur.execute(f'UPDATE user SET reminder_time={new_time} WHERE user_id={user_id}')
+        cur.execute(f"UPDATE users SET reminder_time={new_time} WHERE user_id={user_id}")
         con.commit()
         cur.close()
         con.close()
@@ -205,11 +211,11 @@ def update_reminder_time(new_time, user_id):
 
 
 def reset_current_value(user_id, daily_value_of_water):
-    con = sqlite3.connect("bot.db")
+    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
     cur = con.cursor()
 
     try:
-        cur.execute(f'UPDATE user SET current_value_of_water={daily_value_of_water} WHERE user_id={user_id}')
+        cur.execute(f"UPDATE users SET current_value_of_water={daily_value_of_water} WHERE user_id={user_id}")
         con.commit()
 
     except Exception:
