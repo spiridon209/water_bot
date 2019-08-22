@@ -17,7 +17,7 @@ import telebot
 from telebot import types
 
 
-telebot.apihelper.proxy = config.proxy
+#telebot.apihelper.proxy = config.proxy
 
 load_dotenv()
 DEBUG = os.getenv('DEBUG') == 'TRUE'
@@ -58,7 +58,7 @@ def create_control_keyboard():
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     id, name, value = check_user(message)
-    print(type(id))
+
     if id == message.chat.id:
         update_state(message, DONE)
         bot.send_message(chat_id=message.chat.id,

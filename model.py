@@ -1,13 +1,20 @@
+import os
+
 import psycopg2
 from dotenv import load_dotenv
 
 load_dotenv()
 
+DB = os.getenv('DB')
+USER = os.getenv('USER')
+PASS = os.getenv('PASS')
+HOST = os.getenv('HOST')
 
-def check_user(message):
+
+def check_user(message, db=DB, user=USER, password=PASS, host=HOST):
     """The function checks the presence of the user in the database."""
 
-    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
 
     try:
@@ -30,7 +37,7 @@ def check_user(message):
     return id, name, value
 
 
-def create_data(data):
+def create_data(data, db=DB, user=USER, password=PASS, host=HOST):
     id = data['id']
     name = data['name']
     gender = data['gender']
@@ -45,7 +52,7 @@ def create_data(data):
     bot_status = 'off'
     reminder_time = 0
 
-    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
 
     try:
@@ -55,7 +62,7 @@ def create_data(data):
                     f"{daily_value_of_water}, {current_value_of_water}, '{time_zone}', "
                     f"{water_value_per_hour}, '{bot_status}', {reminder_time})")
         con.commit()
-        print('DB IS EXIST')
+        print('Table is created!')
 
     except Exception as ex:
         print(f'Create error {ex}')
@@ -66,8 +73,8 @@ def create_data(data):
 
 
 
-def remove(message):
-    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
+def remove(message, db=DB, user=USER, password=PASS, host=HOST):
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
 
     try:
@@ -80,8 +87,8 @@ def remove(message):
         print('Remove error')
 
 
-def check_bot_status(message):
-    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
+def check_bot_status(message, db=DB, user=USER, password=PASS, host=HOST):
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
 
     try:
@@ -97,8 +104,8 @@ def check_bot_status(message):
         con.close()
 
 
-def bot_off(message):
-    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
+def bot_off(message, db=DB, user=USER, password=PASS, host=HOST):
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
     status = 'off'
     try:
@@ -114,14 +121,13 @@ def bot_off(message):
         return
 
 
-def bot_on(message):
-    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
+def bot_on(message, db=DB, user=USER, password=PASS, host=HOST):
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
     status = 'on'
     try:
         cur.execute(f"UPDATE users SET bot_status='{status}' WHERE chat_id={message.chat.id}")
         con.commit()
-        print('BOT ON')
 
     except Exception as ex:
         print(f"Can't start the bot - {ex}")
@@ -132,8 +138,8 @@ def bot_on(message):
         return
 
 
-def update_values_of_water(user_id, daily_value, current_value, value_per_hour):
-    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
+def update_values_of_water(user_id, daily_value, current_value, value_per_hour, db=DB, user=USER, password=PASS, host=HOST):
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
 
     try:
@@ -155,8 +161,8 @@ def update_values_of_water(user_id, daily_value, current_value, value_per_hour):
         con.close()
 
 
-def get_info_about_active_users():
-    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
+def get_info_about_active_users(db=DB, user=USER, password=PASS, host=HOST):
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
 
     try:
@@ -172,8 +178,8 @@ def get_info_about_active_users():
         print(f"Can't get chat_id and reminder_time from db ---> {ex}")
 
 
-def add_reminder_time(message, reminder_time):
-    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
+def add_reminder_time(message, reminder_time, db=DB, user=USER, password=PASS, host=HOST):
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
 
     if reminder_time % int(reminder_time) == 0.6:
@@ -191,8 +197,8 @@ def add_reminder_time(message, reminder_time):
         print(f"Can't add reminder_time db ---> {ex}")
 
 
-def update_reminder_time(new_time, user_id):
-    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
+def update_reminder_time(new_time, user_id, db=DB, user=USER, password=PASS, host=HOST):
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
 
     if new_time % int(new_time) == 0.6:
@@ -210,8 +216,8 @@ def update_reminder_time(new_time, user_id):
         print(f"Can't update reminder_time db ---> {ex}")
 
 
-def reset_current_value(user_id, daily_value_of_water):
-    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
+def reset_current_value(user_id, daily_value_of_water, db=DB, user=USER, password=PASS, host=HOST):
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
 
     try:

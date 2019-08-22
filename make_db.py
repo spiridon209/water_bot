@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
+import os
+
 import psycopg2
-# make database
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DB = os.getenv('DB')
+USER = os.getenv('USER')
+PASS = os.getenv('PASS')
+HOST = os.getenv('HOST')
 
 
-def make_table():
-    con = psycopg2.connect(dbname="bot", user="postgres", password='123', host='localhost')
+def make_table(db=DB, user=USER, password=PASS, host=HOST):
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
 
     sql = "CREATE TABLE IF NOT EXISTS users (user_id serial PRIMARY KEY, chat_id double precision, name text, gender text, weight integer," \
