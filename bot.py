@@ -3,7 +3,7 @@ import time
 from datetime import datetime, timezone, timedelta
 import os
 
-import config
+#import config
 from calculations import get_female_amount, get_male_amount, get_water_volume_per_hour
 from model import check_user, create_data, bot_on, bot_off, check_bot_status, remove, add_reminder_time
 import my_parser
