@@ -182,6 +182,9 @@ def add_reminder_time(message, reminder_time, db=DB, user=USER, password=PASS, h
     con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
 
+    if int(reminder_time) == 24:
+        new_time = 0 + (reminder_time % int(reminder_time))
+
     if reminder_time % int(reminder_time) == 0.6:
         reminder_time = int(reminder_time) + 1
 
@@ -200,6 +203,9 @@ def add_reminder_time(message, reminder_time, db=DB, user=USER, password=PASS, h
 def update_reminder_time(new_time, user_id, db=DB, user=USER, password=PASS, host=HOST):
     con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
     cur = con.cursor()
+
+    if int(new_time) == 24:
+        new_time = 0 + (new_time % int(new_time))
 
     if new_time % int(new_time) == 0.6:
         new_time = int(new_time) + 1
