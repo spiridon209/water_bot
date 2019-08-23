@@ -183,7 +183,7 @@ def add_reminder_time(message, reminder_time, db=DB, user=USER, password=PASS, h
     cur = con.cursor()
 
     if int(reminder_time) == 24:
-        new_time = 0 + (reminder_time % int(reminder_time))
+        reminder_time = 0 + (reminder_time % int(reminder_time))
 
     if reminder_time % int(reminder_time) == 0.6:
         reminder_time = int(reminder_time) + 1
