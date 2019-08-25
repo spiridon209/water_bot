@@ -183,9 +183,9 @@ def add_reminder_time(message, reminder_time, db=DB, user=USER, password=PASS, h
     cur = con.cursor()
 
     if int(reminder_time) == 24:
-        reminder_time = 0 + (reminder_time % int(reminder_time))
+        reminder_time = round(0 + (reminder_time % int(reminder_time)), 2)
 
-    if reminder_time % int(reminder_time) == 0.6:
+    if reminder_time - int(reminder_time) == 0.6:
         reminder_time = int(reminder_time) + 1
 
     try:
@@ -205,9 +205,9 @@ def update_reminder_time(new_time, user_id, db=DB, user=USER, password=PASS, hos
     cur = con.cursor()
 
     if int(new_time) == 24:
-        new_time = 0 + (new_time % int(new_time))
+        new_time = round(0 + (new_time % int(new_time)), 2)
 
-    if new_time % int(new_time) == 0.6:
+    if new_time - int(new_time) == 0.6:
         new_time = int(new_time) + 1
 
     try:
@@ -247,10 +247,10 @@ def get_message_text(user_bio, current_utc_time):
 
     sleep = user_bio[7]
     wakeup = user_bio[6]
-    user_time = user_bio[-1]
+    # user_time = user_bio[-1]
     current_value_of_water = user_bio[9]
 
-    if user_time == wakeup:
+    if current_utc_time == wakeup:
         current_value_of_water -= user_bio[-3]
         text = f'Доброе утро! Пора выпить {user_bio[-3]}мл воды, осталось {current_value_of_water}мл.'
         update_values_of_water(user_id=user_bio[0], daily_value=user_bio[8],
