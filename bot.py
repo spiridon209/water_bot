@@ -224,7 +224,10 @@ if __name__ == '__main__':
         for i in list_of_users:
             try:
                 text = get_message_text(user_bio=i, current_utc_time=current_utc_time)
-                bot.send_message(chat_id=i[1], text=text)
+                if text is None:
+                    continue
+                else:
+                    bot.send_message(chat_id=i[1], text=text)
             except Exception as ex:
                 print(f"Can't send message to user {i} ---> {ex}")
 
