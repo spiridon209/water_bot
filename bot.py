@@ -222,12 +222,11 @@ if __name__ == '__main__':
         print(current_utc_time)
 
         for i in list_of_users:
-            if i[-1] == current_utc_time:
+            try:
                 text = get_message_text(user_bio=i, current_utc_time=current_utc_time)
-                try:
-                    bot.send_message(chat_id=i[1], text=text)
-                except Exception as ex:
-                    print(f"Can't send message to user {i} ---> {ex}")
+                bot.send_message(chat_id=i[1], text=text)
+            except Exception as ex:
+                print(f"Can't send message to user {i} ---> {ex}")
 
     tl.start()
 
