@@ -58,7 +58,7 @@ def create_data(data, db=DB, user=USER, password=PASS, host=HOST):
 
     try:
         cur.execute(f"INSERT INTO users (chat_id, name, gender, weight, hometown, wakeup, sleep, daily_value_of_water, "
-                    f"current_value_of_water, time_zone, water_value_per_hour, bot_status, reminder_time) "
+                    f"current_value_of_water, time_zone, water_value_per_hour, bot_status, reminder_time, user_state) "
                     f"VALUES({id}, '{name}', '{gender}', {weight}, '{hometown}', {wakeup}, {sleep}, "
                     f"{daily_value_of_water}, {current_value_of_water}, '{time_zone}', "
                     f"{water_value_per_hour}, '{bot_status}', {reminder_time}, '{user_state}')")
