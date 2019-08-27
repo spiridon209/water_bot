@@ -50,6 +50,7 @@ def create_data(data, db=DB, user=USER, password=PASS, host=HOST):
     time_zone = data['time_zone']
     water_value_per_hour = data['water_value_per_hour']
     bot_status = 'off'
+    user_state = 'wake'
     reminder_time = 0
 
     con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
@@ -60,7 +61,7 @@ def create_data(data, db=DB, user=USER, password=PASS, host=HOST):
                     f"current_value_of_water, time_zone, water_value_per_hour, bot_status, reminder_time) "
                     f"VALUES({id}, '{name}', '{gender}', {weight}, '{hometown}', {wakeup}, {sleep}, "
                     f"{daily_value_of_water}, {current_value_of_water}, '{time_zone}', "
-                    f"{water_value_per_hour}, '{bot_status}', {reminder_time})")
+                    f"{water_value_per_hour}, '{bot_status}', {reminder_time}, '{user_state}')")
         con.commit()
         print('Table is created!')
 
@@ -239,6 +240,38 @@ def reset_current_value(user_id, daily_value_of_water, db=DB, user=USER, passwor
         return
 
 
+def update_user_state_to_sleep(user_id, db=DB, user=USER, password=PASS, host=HOST):
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
+    cur = con.cursor()
+
+    try:
+        cur.execute(f"UPDATE users SET user_state='sleep' WHERE user_id={user_id}")
+        con.commit()
+        cur.close()
+        con.close()
+
+    except Exception as ex:
+        cur.close()
+        con.close()
+        print(f"Can't update user_state to sleep db ---> {ex}")
+
+
+def update_user_state_to_wake(user_id, db=DB, user=USER, password=PASS, host=HOST):
+    con = psycopg2.connect(dbname=db, user=user, password=password, host=host)
+    cur = con.cursor()
+
+    try:
+        cur.execute(f"UPDATE users SET user_state='wake' WHERE user_id={user_id}")
+        con.commit()
+        cur.close()
+        con.close()
+
+    except Exception as ex:
+        cur.close()
+        con.close()
+        print(f"Can't update user_state to wake db ---> {ex}")
+
+
 def get_message_text(user_bio, current_utc_time):
 
     '''
@@ -247,33 +280,37 @@ def get_message_text(user_bio, current_utc_time):
 
     sleep = user_bio[7]
     wakeup = user_bio[6]
-    user_time = user_bio[-1]
+    user_time = user_bio[-2]
     current_value_of_water = user_bio[9]
+    user_state = user_bio[-1]
 
-    if current_utc_time == wakeup:
-        current_value_of_water -= user_bio[-3]
-        text = f'Доброе утро! Пора выпить {user_bio[-3]}мл воды, осталось {current_value_of_water}мл.'
+    if current_utc_time == wakeup and user_state == 'sleep':
+        current_value_of_water -= user_bio[-4]
+        text = f'Доброе утро! Пора выпить {user_bio[-4]}мл воды, осталось {current_value_of_water}мл.'
         update_values_of_water(user_id=user_bio[0], daily_value=user_bio[8],
                                current_value=user_bio[9], value_per_hour=user_bio[11])
-        update_reminder_time(new_time=round(user_bio[-1] + 1, 2), user_id=user_bio[0])
+        update_reminder_time(new_time=round(user_bio[-2] + 1, 2), user_id=user_bio[0])
+        update_user_state_to_wake(user_id=user_bio[0])
         return text
 
-    elif current_value_of_water <= 0:
+    elif current_value_of_water <= 0 and user_state == 'wake':
         text = 'Сегодня вы употребили свою суточную норму воды, хорошая работа!'
         update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
         reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
+        update_user_state_to_sleep(user_id=user_bio[0])
         return text
 
-    elif current_utc_time == sleep and current_value_of_water > 0:
+    elif current_utc_time == sleep and current_value_of_water > 0 and user_state == 'wake':
         text = f'Сегодня вы употребили не достаточно воды. Ничего страшного! Завтра у вас всё получится!'
         reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
         update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
+        update_user_state_to_sleep(user_id=user_bio[0])
         return text
 
-    elif current_utc_time == user_time:
-        current_value_of_water -= user_bio[-3]
-        text = f'Пора выпить {user_bio[-3]}мл воды, осталось {current_value_of_water}мл.'
+    elif current_utc_time == user_time and user_state == 'wake':
+        current_value_of_water -= user_bio[-4]
+        text = f'Пора выпить {user_bio[-4]}мл воды, осталось {current_value_of_water}мл.'
         update_values_of_water(user_id=user_bio[0], daily_value=user_bio[8],
                                current_value=user_bio[9], value_per_hour=user_bio[11])
-        update_reminder_time(new_time=round(user_bio[-1] + 1, 2), user_id=user_bio[0])
+        update_reminder_time(new_time=round(user_bio[-2] + 1, 2), user_id=user_bio[0])
         return text
