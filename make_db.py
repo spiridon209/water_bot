@@ -18,7 +18,7 @@ def make_table(db=DB, user=USER, password=PASS, host=HOST):
 
     sql = "CREATE TABLE IF NOT EXISTS users (user_id serial PRIMARY KEY, chat_id double precision, name text, gender text, weight integer," \
           "hometown text, wakeup real, sleep real, daily_value_of_water integer, current_value_of_water integer," \
-          "time_zone text, water_value_per_hour integer, bot_status text, reminder_time real, user_state);"
+          "time_zone text, water_value_per_hour integer, bot_status text, reminder_time real, user_state text);"
 
     try:
         cur.execute(sql)
