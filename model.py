@@ -281,36 +281,45 @@ def get_message_text(user_bio, current_utc_time):
     sleep = user_bio[7]
     wakeup = user_bio[6]
     user_time = user_bio[-2]
+    daily_value_of_water = user_bio[8]
     current_value_of_water = user_bio[9]
+    water_value_per_hour = user_bio[11]
     user_state = user_bio[-1]
 
     if current_utc_time == wakeup and user_state == 'sleep':
         current_value_of_water -= user_bio[-4]
         text = f'Доброе утро! Пора выпить {user_bio[-4]}мл воды, осталось {current_value_of_water}мл.'
-        update_values_of_water(user_id=user_bio[0], daily_value=user_bio[8],
-                               current_value=user_bio[9], value_per_hour=user_bio[11])
+        update_values_of_water(user_id=user_bio[0], daily_value=daily_value_of_water,
+                               current_value=current_value_of_water, value_per_hour=user_bio[11])
         update_reminder_time(new_time=round(user_bio[-2] + 1, 2), user_id=user_bio[0])
         update_user_state_to_wake(user_id=user_bio[0])
         return text
 
     elif current_value_of_water <= 0 and user_state == 'wake':
         text = 'Сегодня вы употребили свою суточную норму воды, хорошая работа!'
-        update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
-        reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
+        update_reminder_time(new_time=wakeup, user_id=user_bio[0])
+        reset_current_value(user_id=user_bio[0], daily_value_of_water=daily_value_of_water)
         update_user_state_to_sleep(user_id=user_bio[0])
         return text
 
     elif current_utc_time == sleep and current_value_of_water > 0 and user_state == 'wake':
         text = f'Сегодня вы употребили не достаточно воды. Ничего страшного! Завтра у вас всё получится!'
-        reset_current_value(user_id=user_bio[0], daily_value_of_water=user_bio[8])
-        update_reminder_time(new_time=user_bio[6], user_id=user_bio[0])
+        reset_current_value(user_id=user_bio[0], daily_value_of_water=daily_value_of_water)
+        update_reminder_time(new_time=wakeup, user_id=user_bio[0])
         update_user_state_to_sleep(user_id=user_bio[0])
         return text
 
     elif current_utc_time == user_time and user_state == 'wake':
-        current_value_of_water -= user_bio[-4]
-        text = f'Пора выпить {user_bio[-4]}мл воды, осталось {current_value_of_water}мл.'
-        update_values_of_water(user_id=user_bio[0], daily_value=user_bio[8],
-                               current_value=user_bio[9], value_per_hour=user_bio[11])
-        update_reminder_time(new_time=round(user_bio[-2] + 1, 2), user_id=user_bio[0])
+        current_value_of_water -= daily_value_of_water
+
+        if current_value_of_water - water_value_per_hour < 0:
+            last_value_of_water = daily_value_of_water + water_value_per_hour
+            text = f'Пора выпить {last_value_of_water}мл воды, осталось 0мл.'
+            reset_current_value(user_id=user_bio[0], daily_value_of_water=daily_value_of_water)
+            update_reminder_time(new_time=sleep, user_id=user_bio[0])
+        else:
+            text = f'Пора выпить {user_bio[-4]}мл воды, осталось {current_value_of_water}мл.'
+            update_values_of_water(user_id=user_bio[0], daily_value=daily_value_of_water,
+                                   current_value=current_value_of_water, value_per_hour=user_bio[11])
+            update_reminder_time(new_time=round(user_time + 1, 2), user_id=user_bio[0])
         return text

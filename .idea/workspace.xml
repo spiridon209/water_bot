@@ -16,7 +16,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
+            <state relative-caret-position="236">
               <caret line="228" column="21" selection-start-line="228" selection-start-column="21" selection-end-line="228" selection-end-column="21" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
@@ -37,7 +37,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/make_db.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
+            <state relative-caret-position="185">
               <caret line="20" column="109" selection-start-line="20" selection-start-column="109" selection-end-line="20" selection-end-column="109" />
               <folding>
                 <element signature="e#24#33#0" expanded="true" />
@@ -102,8 +102,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="287">
-              <caret line="60" column="116" selection-start-line="60" selection-start-column="116" selection-end-line="60" selection-end-column="116" />
+            <state relative-caret-position="256">
+              <caret line="315" column="77" selection-start-line="315" selection-start-column="77" selection-end-line="315" selection-end-column="77" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -160,8 +160,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -623,7 +623,14 @@
       <option name="project" value="LOCAL" />
       <updated>1566933857182</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="add user_state in table&#10;add 2 functions in model.py">
+      <created>1566934319744</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1566934319744</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -720,13 +727,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/timezones.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" selection-start-line="17" selection-end-line="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/my_parser.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -737,9 +737,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/timezones.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
+        <state relative-caret-position="236">
           <caret line="228" column="21" selection-start-line="228" selection-start-column="21" selection-end-line="228" selection-end-column="21" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
@@ -749,7 +756,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/make_db.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
+        <state relative-caret-position="185">
           <caret line="20" column="109" selection-start-line="20" selection-start-column="109" selection-end-line="20" selection-end-column="109" />
           <folding>
             <element signature="e#24#33#0" expanded="true" />
@@ -759,8 +766,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="287">
-          <caret line="60" column="116" selection-start-line="60" selection-start-column="116" selection-end-line="60" selection-end-column="116" />
+        <state relative-caret-position="256">
+          <caret line="315" column="77" selection-start-line="315" selection-start-column="77" selection-end-line="315" selection-end-column="77" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
