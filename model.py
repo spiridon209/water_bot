@@ -310,7 +310,7 @@ def get_message_text(user_bio, current_utc_time):
         return text
 
     elif current_utc_time == user_time and user_state == 'wake':
-        # current_value_of_water -= daily_value_of_water
+        current_value_of_water -= water_value_per_hour
 
         if current_value_of_water - water_value_per_hour < 0:
             last_value_of_water = current_value_of_water + water_value_per_hour
