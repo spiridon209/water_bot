@@ -290,7 +290,7 @@ def get_message_text(user_bio, current_utc_time):
         current_value_of_water -= user_bio[-4]
         text = f'Доброе утро! Пора выпить {user_bio[-4]}мл воды, осталось {current_value_of_water}мл.'
         update_values_of_water(user_id=user_bio[0], daily_value=daily_value_of_water,
-                               current_value=current_value_of_water, value_per_hour=user_bio[11])
+                               current_value=user_bio[9], value_per_hour=user_bio[11])
         update_reminder_time(new_time=round(user_bio[-2] + 1, 2), user_id=user_bio[0])
         update_user_state_to_wake(user_id=user_bio[0])
         return text
