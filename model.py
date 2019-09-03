@@ -144,14 +144,15 @@ def update_values_of_water(user_id, daily_value, current_value, value_per_hour, 
     cur = con.cursor()
 
     try:
-        current_value -= value_per_hour
+        if current_value != 0:
+            current_value -= value_per_hour
 
-        if current_value <= 0:
-            cur.execute(f"UPDATE users SET current_value_of_water={0} WHERE user_id={user_id}")
-            con.commit()
-        else:
-            cur.execute(f"UPDATE users SET current_value_of_water={current_value} WHERE user_id={user_id}")  # возможно сделать изменение тут чтобы не писать в базу когда не надо
-            con.commit()
+        # if current_value <= 0:
+        #     cur.execute(f"UPDATE users SET current_value_of_water={0} WHERE user_id={user_id}")
+        #     con.commit()
+
+        cur.execute(f"UPDATE users SET current_value_of_water={current_value} WHERE user_id={user_id}")  # возможно сделать изменение тут чтобы не писать в базу когда не надо
+        con.commit()
 
         cur.close()
         con.close()
@@ -316,7 +317,7 @@ def get_message_text(user_bio, current_utc_time):
             last_value_of_water = current_value_of_water + water_value_per_hour
             text = f'Пора выпить {last_value_of_water}мл воды, осталось 0мл.'
             update_values_of_water(user_id=user_bio[0], daily_value=daily_value_of_water,
-                                   current_value=user_bio[9], value_per_hour=user_bio[11])
+                                   current_value=0, value_per_hour=user_bio[11])
             update_reminder_time(new_time=sleep, user_id=user_bio[0])
         else:
             text = f'Пора выпить {user_bio[-4]}мл воды, осталось {current_value_of_water}мл.'
